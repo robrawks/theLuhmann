@@ -174,6 +174,11 @@ class TagModal(ModalScreen):
         if event.input.id == "tag-input":
             self._load_suggestions(event.value)
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        """Handle Enter key in input - select current suggestion."""
+        if event.input.id == "tag-input":
+            self.action_select_suggestion()
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
         button_id = event.button.id
