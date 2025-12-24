@@ -18,7 +18,7 @@ This app embodies Luhmann's principles:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/theLuhmann.git
+git clone https://github.com/robrawks/theLuhmann.git
 cd theLuhmann
 
 # Create virtual environment
@@ -28,8 +28,21 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Initialize database
+# Initialize database (empty)
 sqlite3 data/zettel.db < schema.sql
+
+# OR initialize with sample data to explore
+sqlite3 data/zettel.db < schema.sql
+sqlite3 data/zettel.db < sample_data.sql
+```
+
+## Reset Database
+
+To clear all data and start fresh:
+
+```bash
+./scripts/reset_db.sh              # Empty database
+./scripts/reset_db.sh --with-samples  # With sample cards
 ```
 
 ## Usage
