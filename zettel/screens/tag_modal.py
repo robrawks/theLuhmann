@@ -51,7 +51,7 @@ class TagModal(ModalScreen):
     def compose(self) -> ComposeResult:
         """Compose the tag modal."""
         with Vertical(id="tag-container"):
-            yield Static(f"TAG CARD: {self.zettel_id}", id="tag-title")
+            yield Static("TAG CARD", id="tag-title")
 
             # Current tags section
             yield Static("Current tags:", id="tag-current-label")
