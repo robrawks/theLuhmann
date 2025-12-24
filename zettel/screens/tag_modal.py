@@ -149,10 +149,10 @@ class TagModal(ModalScreen):
         if not self._suggestions and not self._search_text:
             lines.append("[dim]No insights yet. Type to create one.[/]")
 
-        # Update the container with a single Static widget
+        # Update the container with a single Static widget (no ID to avoid async removal race)
         container.remove_children()
         if lines:
-            container.mount(Static("\n".join(lines), id="suggestions-list"))
+            container.mount(Static("\n".join(lines)))
 
     def _get_max_index(self) -> int:
         """Get the maximum valid selection index."""
