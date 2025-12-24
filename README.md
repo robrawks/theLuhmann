@@ -1,8 +1,10 @@
 # theLuhmann
 
-A terminal-based Zettelkasten application inspired by Niklas Luhmann's slip-box method.
+> In the age of endless insight editing, bubble graph thirst traps, and sterile PARA second brains. **The Luhmann is wisdom that grows.**
 
-Built with [Textual](https://textual.textualize.io/) for a rich TUI experience.
+A terminal-based Zettelkasten built on immutability. No endless rewrites. No graph theater. Just atomic ideas that accumulate into something real.
+
+Built with [Textual](https://textual.textualize.io/) for an 80s terminal aesthetic.
 
 ## Philosophy
 
