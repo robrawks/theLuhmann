@@ -112,7 +112,7 @@ class BrowseScreen(Screen):
             cards = self.db.get_orphans()
             title = "[bold red]ORPHANS[/] (No Connections)"
         else:
-            cards = self.db.get_all_cards(limit=200, order_by='zettel_id')
+            cards = self.db.get_all_cards(order_by='zettel_id')
             title = "[bold cyan]ZETTELKASTEN[/]"
 
         self._all_cards = cards
