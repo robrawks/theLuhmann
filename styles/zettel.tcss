@@ -704,3 +704,131 @@ VerticalScroll > ScrollBar > .scrollbar--bar {
 VerticalScroll > ScrollBar > .scrollbar--bar:hover {
     background: $border-accent;
 }
+
+/* ==========================================================================
+   Tag Modal - Insight Tagging
+   ========================================================================== */
+
+TagModal {
+    align: center middle;
+}
+
+#tag-container {
+    width: 60%;
+    height: auto;
+    max-height: 70%;
+    background: $navy-panel;
+    border: round $accent-purple;
+    padding: 2;
+}
+
+#tag-title {
+    text-style: bold;
+    color: $accent-purple;
+    text-align: center;
+    height: 2;
+}
+
+#tag-current-label {
+    color: $text-muted;
+    height: 1;
+    margin-top: 1;
+}
+
+#tag-current-tags {
+    height: auto;
+    min-height: 2;
+    padding: 1 0;
+    layout: horizontal;
+}
+
+.tag-chip {
+    height: 1;
+    margin-right: 1;
+    layout: horizontal;
+}
+
+.tag-chip-name {
+    padding: 0 1;
+    background: $navy-highlight;
+}
+
+.tag-chip-remove {
+    min-width: 3;
+    height: 1;
+    padding: 0;
+    background: $navy-surface;
+    color: $status-critical;
+    border: none;
+}
+
+.tag-chip-remove:hover {
+    background: $status-critical;
+    color: $text-bright;
+}
+
+.tag-empty {
+    color: $text-dim;
+}
+
+#tag-divider {
+    height: 1;
+    border-bottom: solid $border-panel;
+    margin: 1 0;
+}
+
+#tag-add-label {
+    color: $text-muted;
+    height: 1;
+}
+
+#tag-input {
+    width: 100%;
+    background: $navy-bg;
+    border: solid $border-panel;
+    margin: 1 0;
+}
+
+#tag-input:focus {
+    border: solid $accent-purple;
+}
+
+#tag-suggestions-container {
+    height: auto;
+    max-height: 12;
+    overflow-y: auto;
+}
+
+#tag-suggestions {
+    padding: 0;
+}
+
+.tag-suggestion {
+    height: 1;
+    padding: 0 1;
+    color: $text-normal;
+}
+
+.tag-suggestion:hover {
+    background: $navy-highlight;
+}
+
+.tag-suggestion.reverse {
+    background: $accent-purple;
+    color: $text-bright;
+}
+
+.tag-create {
+    color: $status-good;
+}
+
+#tag-buttons {
+    height: 3;
+    layout: horizontal;
+    align: center middle;
+    margin-top: 1;
+}
+
+#tag-buttons Button {
+    min-width: 16;
+}

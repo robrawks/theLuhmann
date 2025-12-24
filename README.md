@@ -87,6 +87,7 @@ export ZETTEL_DB_PATH=/path/to/your/zettel.db
 | `[` / `]` | Page trail older/newer |
 | `n` | New card |
 | `l` | Add link (with annotation) |
+| `t` | Tag card (add/remove insights) |
 | `p` | Show 2-hop paths |
 | `/` | Search |
 | `s` | Show stats |

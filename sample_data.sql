@@ -19,3 +19,22 @@ INSERT INTO zettel_links (from_zettel_id, to_zettel_id) VALUES
 ('2', '2/1'),
 ('3', '1'),
 ('3', '2');
+
+-- Sample insights
+INSERT INTO insight_index (id, index_name) VALUES
+('methodology', 'Methodology'),
+('philosophy', 'Philosophy'),
+('writing', 'Writing'),
+('knowledge-management', 'Knowledge Management'),
+('emergence', 'Emergence');
+
+-- Tag some cards with insights
+INSERT INTO zettel_insight_index (zettel_id, index_id) VALUES
+('1', 'methodology'),
+('1', 'knowledge-management'),
+('1/1', 'philosophy'),
+('1/1', 'writing'),
+('1/1a', 'philosophy'),
+('1/2', 'emergence'),
+('2', 'methodology'),
+('3', 'knowledge-management');

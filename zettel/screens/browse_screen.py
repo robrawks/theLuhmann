@@ -175,6 +175,11 @@ class BrowseScreen(Screen):
         filter_input = self.query_one("#filter-input", Input)
         filter_input.display = True
         filter_input.value = ""
+        # Update placeholder based on view mode
+        if self.view_mode == "insights":
+            filter_input.placeholder = "Search insights..."
+        else:
+            filter_input.placeholder = "Filter by ID..."
         filter_input.focus()
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -275,11 +280,9 @@ class BrowseScreen(Screen):
         key = event.row_key.value
 
         if self.view_mode == "insights" and key.startswith("insight:"):
-            # Selected an insight - filter cards by this insight
+            # Selected an insight - show cards with this insight
             insight_id = key.split(":")[1]
-            # For now, switch to cards view filtered by insight
-            # TODO: implement proper insight filtering
-            self.action_show_recent()
+            self._show_cards_by_insight(insight_id)
         else:
             # Selected a card - switch to card view
             if self.on_selected:
@@ -288,6 +291,49 @@ class BrowseScreen(Screen):
                 # Push main screen with this card
                 from zettel.screens.main import MainScreen
                 self.app.push_screen(MainScreen(initial_card=key))
+
+    def _show_cards_by_insight(self, insight_id: str) -> None:
+        """Show cards filtered by a specific insight."""
+        table = self.query_one("#browse-table", DataTable)
+
+        # Switch to cards view mode
+        self.view_mode = "cards"
+        self.card_mode = "insight"
+        self._setup_card_columns(table)
+
+        # Get cards with this insight
+        cards = self.db.get_cards_by_insight(insight_id)
+        self._all_cards = cards
+
+        # Find insight name for title
+        insight_name = insight_id
+        for i in self._all_insights:
+            if i['id'] == insight_id:
+                insight_name = i['index_name']
+                break
+
+        # Update title and stats
+        self.query_one("#browse-title", Static).update(f"[bold purple]#{insight_name}[/]")
+        self.query_one("#browse-stats", Static).update(f"[dim]{len(cards)} notes[/]")
+
+        # Populate table
+        table.clear()
+        for card in cards:
+            preview = card['note'].replace('\n', ' ')[:45]
+            if len(card['note']) > 45:
+                preview += "..."
+
+            created = card['created_at'][:10] if card['created_at'] else ''
+
+            table.add_row(
+                card['zettel_id'],
+                preview,
+                str(card['connection_count']),
+                created,
+                key=card['zettel_id']
+            )
+
+        table.focus()
 
     def action_cursor_down(self) -> None:
         """Move cursor down (vim binding)."""

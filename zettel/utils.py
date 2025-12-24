@@ -452,6 +452,163 @@ class ZettelDB:
         conn.close()
         return insights
 
+    def get_all_insights_simple(self) -> list[dict]:
+        """Get all insights (id, name) without card counts - for tag picker."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT id, index_name as name
+                FROM insight_index
+                ORDER BY index_name
+            """)
+            insights = [dict(r) for r in cursor.fetchall()]
+        except sqlite3.OperationalError:
+            insights = []
+
+        conn.close()
+        return insights
+
+    def search_insights(self, query: str) -> list[dict]:
+        """Search insights by name (case-insensitive substring match)."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT id, index_name as name
+                FROM insight_index
+                WHERE LOWER(index_name) LIKE LOWER(?)
+                ORDER BY index_name
+            """, (f'%{query}%',))
+            insights = [dict(r) for r in cursor.fetchall()]
+        except sqlite3.OperationalError:
+            insights = []
+
+        conn.close()
+        return insights
+
+    def _slugify(self, name: str) -> str:
+        """Convert a name to a slug for insight ID."""
+        # Lowercase, replace spaces with hyphens, remove special chars
+        slug = name.lower().strip()
+        slug = re.sub(r'\s+', '-', slug)
+        slug = re.sub(r'[^a-z0-9\-]', '', slug)
+        return slug
+
+    def create_insight(self, name: str) -> Optional[str]:
+        """
+        Create a new insight tag.
+
+        Returns the insight ID (slug) if created, None if already exists.
+        """
+        insight_id = self._slugify(name)
+        if not insight_id:
+            return None
+
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "INSERT INTO insight_index (id, index_name) VALUES (?, ?)",
+                (insight_id, name.strip())
+            )
+            conn.commit()
+            return insight_id
+        except sqlite3.IntegrityError:
+            return None  # Already exists
+        except sqlite3.OperationalError:
+            return None
+        finally:
+            conn.close()
+
+    def get_card_insights(self, zettel_id: str) -> list[dict]:
+        """Get insights for a specific card."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT ii.id, ii.index_name as name
+                FROM zettel_insight_index zii
+                JOIN insight_index ii ON zii.index_id = ii.id
+                WHERE zii.zettel_id = ?
+                ORDER BY ii.index_name
+            """, (zettel_id,))
+            insights = [dict(r) for r in cursor.fetchall()]
+        except sqlite3.OperationalError:
+            insights = []
+
+        conn.close()
+        return insights
+
+    def add_insight_to_card(self, zettel_id: str, insight_id: str) -> bool:
+        """Tag a card with an insight."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "INSERT INTO zettel_insight_index (zettel_id, index_id) VALUES (?, ?)",
+                (zettel_id, insight_id)
+            )
+            conn.commit()
+            return True
+        except sqlite3.IntegrityError:
+            return False  # Already tagged or invalid
+        except sqlite3.OperationalError:
+            return False
+        finally:
+            conn.close()
+
+    def remove_insight_from_card(self, zettel_id: str, insight_id: str) -> bool:
+        """Remove an insight tag from a card."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "DELETE FROM zettel_insight_index WHERE zettel_id = ? AND index_id = ?",
+                (zettel_id, insight_id)
+            )
+            deleted = cursor.rowcount > 0
+            conn.commit()
+            return deleted
+        except sqlite3.OperationalError:
+            return False
+        finally:
+            conn.close()
+
+    def get_cards_by_insight(self, insight_id: str) -> list[dict]:
+        """Get all cards tagged with a specific insight."""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT
+                    z.zettel_id,
+                    z.note,
+                    z.created_at,
+                    (
+                        SELECT COUNT(*) FROM zettel_links WHERE from_zettel_id = z.zettel_id
+                    ) + (
+                        SELECT COUNT(*) FROM zettel_links WHERE to_zettel_id = z.zettel_id
+                    ) as connection_count
+                FROM zettelkasten z
+                JOIN zettel_insight_index zii ON z.zettel_id = zii.zettel_id
+                WHERE zii.index_id = ?
+                ORDER BY z.created_at DESC
+            """, (insight_id,))
+            cards = [dict(r) for r in cursor.fetchall()]
+        except sqlite3.OperationalError:
+            cards = []
+
+        conn.close()
+        return cards
+
     def card_exists(self, zettel_id: str) -> bool:
         """Check if a card exists."""
         conn = self.get_connection()

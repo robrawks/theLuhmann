@@ -56,6 +56,7 @@ class MainScreen(Screen):
         Binding("escape", "back_to_browser", "Browser"),
         Binding("n", "new_card", "New"),
         Binding("l", "add_link", "Link"),
+        Binding("t", "tag_card", "Tag"),
         Binding("p", "show_paths", "Paths"),
         Binding("slash", "search", "Search"),
         Binding("s", "show_stats", "Stats"),
@@ -219,6 +220,25 @@ class MainScreen(Screen):
             db=self.db,
             on_linked=self._on_link_created
         ))
+
+    def action_tag_card(self) -> None:
+        """Open the tag modal to add/remove insight tags."""
+        if not self._current_card:
+            self.notify("No card selected")
+            return
+
+        from zettel.screens.tag_modal import TagModal
+        self.app.push_screen(TagModal(
+            zettel_id=self._current_card,
+            db=self.db,
+            on_changed=self._on_tags_changed
+        ))
+
+    def _on_tags_changed(self) -> None:
+        """Handle tag changes - refresh the card display."""
+        if self._current_card:
+            card_panel = self.query_one("#card-widget", CardPanel)
+            card_panel.load_card(self._current_card)
 
     def _on_link_created(self, from_id: str, to_id: str) -> None:
         """Handle a newly created link - refresh the card display."""
