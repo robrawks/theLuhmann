@@ -1,0 +1,706 @@
+/*
+ * Zettelkasten TUI - Scholar's Archive Theme
+ *
+ * Dark navy base with amber/gold accents for that old-school library feel.
+ * Rounded panels, clear hierarchy, optimized for knowledge navigation.
+ */
+
+/* ==========================================================================
+   Color Palette
+   ========================================================================== */
+
+/* Primary backgrounds */
+$navy-bg: #1a1b2e;
+$navy-surface: #232538;
+$navy-panel: #2a2d45;
+$navy-highlight: #363a5c;
+
+/* Scholar accents */
+$amber: #d4a574;
+$amber-dim: #a67c52;
+$gold: #fbbf24;
+
+/* Status colors */
+$status-good: #22c55e;
+$status-warn: #eab308;
+$status-critical: #ef4444;
+$status-info: #3b82f6;
+
+/* Text colors */
+$text-bright: #ffffff;
+$text-normal: #e2e8f0;
+$text-muted: #94a3b8;
+$text-dim: #64748b;
+
+/* Accent colors */
+$accent-cyan: #06b6d4;
+$accent-purple: #a855f7;
+
+/* Border colors */
+$border-panel: #4a5568;
+$border-accent: #6366f1;
+$border-highlight: #818cf8;
+$border-amber: #d4a574;
+
+/* ==========================================================================
+   Main Screen & Layout
+   ========================================================================== */
+
+Screen {
+    background: $navy-bg;
+    color: $text-normal;
+}
+
+Header {
+    background: $navy-surface;
+    color: $text-bright;
+    border-bottom: solid $border-accent;
+}
+
+Footer {
+    background: $navy-surface;
+    color: $text-muted;
+    border-top: solid $border-panel;
+}
+
+/* Main Layout Container */
+#main-container {
+    width: 100%;
+    height: 100%;
+    layout: horizontal;
+    background: $navy-bg;
+}
+
+/* Content Area (left side - 80%) */
+#content-area {
+    width: 80%;
+    height: 100%;
+    layout: vertical;
+    padding: 0 1;
+}
+
+/* Trail Panel (right side - 20%) */
+#trail-area {
+    width: 20%;
+    height: 100%;
+    min-width: 18;
+    max-width: 24;
+}
+
+/* ==========================================================================
+   Card Panel - Main Content Display
+   ========================================================================== */
+
+CardPanel {
+    height: 55%;
+    background: $navy-panel;
+    border: round $border-panel;
+    padding: 1;
+    margin-bottom: 1;
+    layout: vertical;
+}
+
+CardPanel:focus {
+    border: round $border-highlight;
+}
+
+#card-header {
+    height: 1;
+    layout: horizontal;
+    background: $navy-surface;
+}
+
+#card-id {
+    width: auto;
+    color: $accent-cyan;
+    text-style: bold;
+    padding: 0 1;
+}
+
+#card-meta {
+    width: 1fr;
+    text-align: right;
+    color: $text-muted;
+    padding: 0 1;
+}
+
+#card-content {
+    height: 1fr;
+    color: $text-normal;
+    padding: 1;
+    background: $navy-bg;
+    border: round $border-panel;
+    overflow-y: auto;
+}
+
+#card-insights {
+    height: 1;
+    color: $accent-purple;
+}
+
+/* ==========================================================================
+   Links Panel - Outbound/Inbound with Hotkeys
+   ========================================================================== */
+
+LinksPanel {
+    height: 45%;
+    background: $navy-panel;
+    border: round $border-panel;
+    padding: 1;
+    layout: vertical;
+}
+
+LinksPanel:focus {
+    border: round $border-highlight;
+}
+
+#links-sections {
+    width: 100%;
+    height: 100%;
+}
+
+#outbound-section {
+    width: 50%;
+    height: 100%;
+    padding-right: 1;
+    border-right: solid $border-panel;
+}
+
+#inbound-section {
+    width: 50%;
+    height: 100%;
+    padding-left: 1;
+}
+
+.links-title {
+    text-style: bold;
+    color: $amber;
+    margin-bottom: 1;
+    height: 1;
+}
+
+.link-item {
+    height: 2;
+    padding: 0;
+}
+
+.link-number {
+    color: $accent-cyan;
+    text-style: bold;
+    width: 4;
+}
+
+.link-id {
+    color: $amber;
+    width: 12;
+}
+
+.link-preview {
+    color: $text-muted;
+    width: 1fr;
+}
+
+/* ==========================================================================
+   Trail Panel - Session History
+   ========================================================================== */
+
+TrailPanel {
+    height: 100%;
+    background: $navy-panel;
+    border: round $border-amber;
+    padding: 1;
+}
+
+TrailPanel:focus {
+    border: round $gold;
+}
+
+#trail-title {
+    text-style: bold;
+    color: $amber;
+    text-align: center;
+    height: 1;
+    margin-bottom: 1;
+}
+
+#trail-count {
+    color: $text-muted;
+    text-align: center;
+    height: 1;
+}
+
+#trail-list {
+    height: 1fr;
+    padding: 0 1;
+    overflow-y: auto;
+}
+
+.trail-item {
+    height: 1;
+}
+
+.trail-number {
+    color: $accent-cyan;
+    text-style: bold;
+    width: 4;
+}
+
+.trail-id {
+    color: $text-normal;
+    width: 1fr;
+}
+
+.trail-current {
+    color: $gold;
+    text-style: bold;
+}
+
+#trail-nav {
+    height: 1;
+    text-align: center;
+    color: $text-dim;
+    margin-top: 1;
+}
+
+#trail-overflow {
+    color: $text-muted;
+    text-align: center;
+    height: 1;
+}
+
+/* ==========================================================================
+   Browse Panel - DataTable View
+   ========================================================================== */
+
+#browse-panel {
+    height: 100%;
+    background: $navy-panel;
+    border: round $border-panel;
+    padding: 1;
+}
+
+#browse-header {
+    height: 2;
+    layout: horizontal;
+    margin-bottom: 1;
+}
+
+#browse-title {
+    text-style: bold;
+    color: $accent-cyan;
+    width: auto;
+    min-width: 20;
+}
+
+#filter-input {
+    width: 1fr;
+    max-width: 40;
+    background: $navy-bg;
+    border: solid $border-panel;
+    margin-left: 2;
+}
+
+#filter-input:focus {
+    border: solid $accent-cyan;
+}
+
+#browse-stats {
+    width: auto;
+    text-align: right;
+    margin-left: 2;
+}
+
+#browse-table {
+    height: 1fr;
+    background: $navy-bg;
+}
+
+#browse-help {
+    height: 1;
+    color: $text-dim;
+    text-align: center;
+    margin-top: 1;
+}
+
+DataTable {
+    background: $navy-bg;
+    color: $text-normal;
+}
+
+DataTable > .datatable--header {
+    background: $navy-surface;
+    color: $text-bright;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: $border-accent;
+    color: $text-bright;
+}
+
+DataTable > .datatable--hover {
+    background: $navy-highlight;
+}
+
+/* ==========================================================================
+   Paths Modal - 2-Hop Discovery
+   ========================================================================== */
+
+PathsModal {
+    align: center middle;
+}
+
+#paths-container {
+    width: 80%;
+    height: 70%;
+    background: $navy-panel;
+    border: round $border-amber;
+    padding: 2;
+}
+
+#paths-title {
+    text-style: bold;
+    color: $amber;
+    text-align: center;
+    height: 2;
+    margin-bottom: 1;
+}
+
+#paths-list {
+    height: 1fr;
+    padding: 1;
+    background: $navy-bg;
+    border: round $border-panel;
+    overflow-y: auto;
+}
+
+.path-item {
+    height: 3;
+    margin-bottom: 1;
+    padding: 0 1;
+}
+
+.path-number {
+    color: $accent-cyan;
+    text-style: bold;
+}
+
+.path-route {
+    color: $amber;
+}
+
+.path-preview {
+    color: $text-muted;
+    padding-left: 4;
+}
+
+#paths-help {
+    height: 1;
+    text-align: center;
+    color: $text-dim;
+    margin-top: 1;
+}
+
+/* ==========================================================================
+   Create Modal - New Card with Live Preview
+   ========================================================================== */
+
+CreateModal {
+    align: center middle;
+}
+
+#create-container {
+    width: 80%;
+    height: 80%;
+    background: $navy-panel;
+    border: round $border-accent;
+    padding: 2;
+}
+
+#create-title {
+    text-style: bold;
+    color: $accent-cyan;
+    text-align: center;
+    height: 2;
+}
+
+#create-id-row {
+    height: 3;
+    layout: horizontal;
+    margin-bottom: 1;
+}
+
+#create-id-label {
+    width: 12;
+    color: $text-muted;
+}
+
+#create-id-input {
+    width: 1fr;
+    background: $navy-bg;
+    border: solid $border-panel;
+}
+
+#create-id-input:focus {
+    border: solid $border-accent;
+}
+
+#create-content-area {
+    height: 1fr;
+    layout: vertical;
+}
+
+#create-content-label {
+    height: 1;
+    color: $text-muted;
+    margin-bottom: 1;
+}
+
+#create-textarea {
+    height: 1fr;
+    background: $navy-bg;
+    border: solid $border-panel;
+}
+
+#create-textarea:focus {
+    border: solid $border-accent;
+}
+
+#create-char-count {
+    height: 1;
+    text-align: right;
+    margin-top: 1;
+}
+
+.char-count-ok {
+    color: $status-good;
+}
+
+.char-count-warn {
+    color: $status-warn;
+}
+
+.char-count-over {
+    color: $status-critical;
+    text-style: bold;
+}
+
+#create-links-row {
+    height: 3;
+    layout: horizontal;
+    margin-top: 1;
+}
+
+#create-links-label {
+    width: 12;
+    color: $text-muted;
+}
+
+#create-links-input {
+    width: 1fr;
+    background: $navy-bg;
+    border: solid $border-panel;
+}
+
+#create-buttons {
+    height: 3;
+    layout: horizontal;
+    align: center middle;
+    margin-top: 1;
+}
+
+#create-buttons Button {
+    margin: 0 1;
+    min-width: 16;
+}
+
+/* ==========================================================================
+   Link Modal
+   ========================================================================== */
+
+LinkModal {
+    align: center middle;
+}
+
+#link-container {
+    width: 60%;
+    height: auto;
+    max-height: 50%;
+    background: $navy-panel;
+    border: round $border-amber;
+    padding: 2;
+}
+
+#link-title {
+    text-style: bold;
+    color: $amber;
+    text-align: center;
+    height: 2;
+}
+
+#link-target-row, #link-reason-row {
+    height: 3;
+    layout: horizontal;
+    margin-bottom: 1;
+}
+
+#link-target-label, #link-reason-label {
+    width: 10;
+    color: $text-muted;
+}
+
+#link-target-input, #link-reason-input {
+    width: 1fr;
+    background: $navy-bg;
+    border: solid $border-panel;
+}
+
+#link-target-input:focus, #link-reason-input:focus {
+    border: solid $border-accent;
+}
+
+#link-preview {
+    height: 3;
+    margin: 1 0;
+    padding: 0 1;
+}
+
+#link-buttons {
+    height: 3;
+    layout: horizontal;
+    align: center middle;
+    margin-top: 1;
+}
+
+#link-buttons Button {
+    margin: 0 1;
+    min-width: 16;
+}
+
+/* ==========================================================================
+   Search Overlay
+   ========================================================================== */
+
+#search-overlay {
+    align: center top;
+    padding-top: 5;
+}
+
+#search-container {
+    width: 60%;
+    height: auto;
+    background: $navy-panel;
+    border: round $border-accent;
+    padding: 1 2;
+}
+
+#search-input {
+    width: 100%;
+    background: $navy-bg;
+    border: solid $border-panel;
+}
+
+#search-input:focus {
+    border: solid $accent-cyan;
+}
+
+#search-results {
+    max-height: 20;
+    margin-top: 1;
+    overflow-y: auto;
+}
+
+/* ==========================================================================
+   Button Styles
+   ========================================================================== */
+
+Button {
+    background: $navy-surface;
+    color: $text-normal;
+    border: solid $border-panel;
+}
+
+Button:hover {
+    background: $navy-highlight;
+    border: solid $border-accent;
+    color: $text-bright;
+}
+
+Button:focus {
+    border: solid $border-accent;
+}
+
+Button.-primary {
+    background: $border-accent;
+    color: $text-bright;
+}
+
+Button.-primary:hover {
+    background: $border-highlight;
+}
+
+/* ==========================================================================
+   Text Utility Classes
+   ========================================================================== */
+
+.text-bright {
+    color: $text-bright;
+}
+
+.text-muted {
+    color: $text-muted;
+}
+
+.text-dim {
+    color: $text-dim;
+}
+
+.text-amber {
+    color: $amber;
+}
+
+.text-cyan {
+    color: $accent-cyan;
+}
+
+.text-purple {
+    color: $accent-purple;
+}
+
+.text-success {
+    color: $status-good;
+}
+
+.text-warning {
+    color: $status-warn;
+}
+
+.text-error {
+    color: $status-critical;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.empty-state {
+    text-align: center;
+    color: $text-muted;
+    padding: 2;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+VerticalScroll > ScrollBar {
+    background: $navy-surface;
+}
+
+VerticalScroll > ScrollBar > .scrollbar--bar {
+    background: $border-panel;
+}
+
+VerticalScroll > ScrollBar > .scrollbar--bar:hover {
+    background: $border-accent;
+}
