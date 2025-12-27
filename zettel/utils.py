@@ -321,12 +321,12 @@ class ZettelDB:
         conn.close()
         return paths
 
-    def get_all_cards(self, limit: int = 100, order_by: str = 'created_at DESC') -> list[dict]:
+    def get_all_cards(self, limit: int = None, order_by: str = 'created_at DESC') -> list[dict]:
         """Get all cards with connection counts."""
         conn = self.get_connection()
         cursor = conn.cursor()
 
-        cursor.execute(f"""
+        query = f"""
             SELECT
                 z.zettel_id,
                 z.note,
@@ -338,8 +338,13 @@ class ZettelDB:
                 ) as connection_count
             FROM zettelkasten z
             ORDER BY {order_by}
-            LIMIT ?
-        """, (limit,))
+        """
+
+        if limit is not None:
+            query += " LIMIT ?"
+            cursor.execute(query, (limit,))
+        else:
+            cursor.execute(query)
 
         cards = [dict(r) for r in cursor.fetchall()]
         conn.close()

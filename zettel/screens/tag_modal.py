@@ -1,10 +1,10 @@
 """Tag Modal - Add/remove insight tags from a card."""
 
-from typing import Callable, Optional
+from typing import Callable
 
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
-from textual.widgets import Static, Input, Button, ListView, ListItem, Label
+from textual.widgets import Static, Input, Button
 from textual.containers import Vertical, Horizontal, ScrollableContainer
 from textual.binding import Binding
 from textual.reactive import reactive
@@ -51,7 +51,7 @@ class TagModal(ModalScreen):
     def compose(self) -> ComposeResult:
         """Compose the tag modal."""
         with Vertical(id="tag-container"):
-            yield Static(f"TAG CARD: {self.zettel_id}", id="tag-title")
+            yield Static("TAG CARD", id="tag-title")
 
             # Current tags section
             yield Static("Current tags:", id="tag-current-label")
@@ -122,19 +122,16 @@ class TagModal(ModalScreen):
     def _render_suggestions(self) -> None:
         """Render the suggestions list."""
         container = self.query_one("#tag-suggestions", Vertical)
-        container.remove_children()
+
+        # Build all content as a single update to avoid duplicate ID issues
+        lines = []
 
         # Existing insights that match
         for i, insight in enumerate(self._suggestions):
             is_selected = (i == self.selected_index)
-            prefix = "→ " if is_selected else "  "
-            style = "reverse" if is_selected else ""
-            item = Static(
-                f"{prefix}{insight['name']}",
-                id=f"suggestion-{i}",
-                classes=f"tag-suggestion {style}"
-            )
-            container.mount(item)
+            prefix = "[reverse]→ " if is_selected else "  "
+            suffix = "[/]" if is_selected else ""
+            lines.append(f"{prefix}{insight['name']}{suffix}")
 
         # "Create new" option if there's search text and no exact match
         if self._search_text:
@@ -145,17 +142,17 @@ class TagModal(ModalScreen):
             if not exact_match:
                 create_index = len(self._suggestions)
                 is_selected = (self.selected_index == create_index)
-                prefix = "→ " if is_selected else "  "
-                style = "reverse" if is_selected else ""
-                create_item = Static(
-                    f'{prefix}[green]+ Create "{self._search_text}"[/]',
-                    id="suggestion-create",
-                    classes=f"tag-suggestion tag-create {style}"
-                )
-                container.mount(create_item)
+                prefix = "[reverse]→ " if is_selected else "  "
+                suffix = "[/]" if is_selected else ""
+                lines.append(f'{prefix}[green]+ Create "{self._search_text}"[/]{suffix}')
 
         if not self._suggestions and not self._search_text:
-            container.mount(Static("[dim]No insights yet. Type to create one.[/]", classes="tag-empty"))
+            lines.append("[dim]No insights yet. Type to create one.[/]")
+
+        # Update the container with a single Static widget (no ID to avoid async removal race)
+        container.remove_children()
+        if lines:
+            container.mount(Static("\n".join(lines)))
 
     def _get_max_index(self) -> int:
         """Get the maximum valid selection index."""
@@ -176,6 +173,11 @@ class TagModal(ModalScreen):
         """Handle search input changes."""
         if event.input.id == "tag-input":
             self._load_suggestions(event.value)
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        """Handle Enter key in input - select current suggestion."""
+        if event.input.id == "tag-input":
+            self.action_select_suggestion()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
